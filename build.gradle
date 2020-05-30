@@ -1,0 +1,32 @@
+//프로젝트의 플러그인 의존성 관리는 위한 설정
+
+buildscript{
+    ext{
+        springBootVersion = '2.1.7.RELEASE'
+    }
+    repositories{
+        mavenCentral() //라이브러리 업로드 난이도 어려움
+        jcenter()//라이브러리 업로드를 간단하게 함. jcenter에 업로드시 자동으로 mavenCenteral로 업로드
+    }
+    dependencies{
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}   //spring-boot-gradle-plugin라는 스프링 부트 그레이들 플러그인의 2.1.7 RELEASE를 의존성으로 받겠다는 의미.
+
+apply plugin : 'java'
+apply plugin : 'eclipse'
+apply plugin : 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+sourceCompatibility=1.8
+
+repositories {  //각종 의존성(라이브러리)들을 어떤 원격 저장소에서 받을지를 정한다.
+    mavenCentral()  //라이브러리 업로드 난이도 어려움
+}
+
+dependencies {  //프로젝트 개발에 필요한 의존성들을 선언하는 곳.
+    compile('org.springframework.boot:spring-boot-starter-web')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
