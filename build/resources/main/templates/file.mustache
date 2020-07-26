@@ -1,0 +1,10 @@
+{{>layout/header}}
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    게시자 : <input type="text" name="id"><br>
+    signal : <input type="text" name="signal"><br>
+    사진 : <input type="file" name="image"><br>
+    <input type="submit" value="파일전송"><br>
+</form>
+
+{{>layout/footer}}

@@ -3,13 +3,16 @@ package com.hyunjong.book.springboot.service;
 
 import com.hyunjong.book.springboot.domain.posts.Posts;
 import com.hyunjong.book.springboot.domain.posts.PostsRepository;
+import com.hyunjong.book.springboot.web.dto.PostsListResponseDto;
 import com.hyunjong.book.springboot.web.dto.PostsResponseDto;
 import com.hyunjong.book.springboot.web.dto.PostsSaveRequestDto;
 import com.hyunjong.book.springboot.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +38,19 @@ public class PostsService {
         //System.out.println(result);
         return new PostsResponseDto(entity);
     }
+
+    @Transactional(readOnly = true) //(readOnly = true)를 주면 트랜잭션 범위는 유지하되 수정,삭제, 기능이 없는 메소드에서 훨씬더 효과적으로 조회를 할수있는 서비스기능에만 사용한다.
+    public List<PostsListResponseDto> findAllDesc(){
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void delete(Long id){
+        Posts posts = postsRepository.findById(id).orElseThrow(()->new IllegalArgumentException("해당 게시글이 없습니다. id = "+id));
+        postsRepository.delete(posts);
+    }
 }
 
 /**
@@ -45,4 +61,10 @@ public class PostsService {
  *
  * @Transactional
  * 트랜잭션은 db의 상태를 변환시키는 하나의 논리적 기능을 수행하기 위한 작업의 단위, 한꺼번에 모두 수행되어야 할 일련의 연산들.
+ *
+ * //postsRepository결과로 넘어온 Posts의 Stream을 map을 통해 PostListResponseDto로 변환
+ * //.map(PostListResponseDto::new) == .map(posts -> new PostsListResponseDto(posts))
+ * //map을 통해 PostListsResponseDto로 변환후 List로 변환해준다.
+ *
+ * stream() api를 통해 List를 받은것을 .collect(Collection.toString())을 통해 다시 List로 변경가능하다.
  */
